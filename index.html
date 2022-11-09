@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
+    <title>Feud</title>
+  </head>
+  <body>
+    <h1>FEUD PROTOCOL</h1>
+    <div class="first">
+      
+      <input type="text" id="mood" placeholder="130HTC max">
+
+      <h2>WITHDRAW & COMPOUND HTC</h2>
+      <button onclick="getMood()">WithdrawHTC</button>
+      <button onclick="setMood()">CompoundHTC</button>
+      <h2>Daily APR      :   0% <br> </h2>
+      <h2>Withdrawn Amount      :   0.0 htc</h2>
+    </div>
+    <div class="first">
+      <input type="text" id = "mood" placeholder="50HTC min">
+      <h2>DEPOSIT HTC</h2>
+      <button onclick="getMood()">ApproveHTC</button>
+      <button onclick="setMood()">DepositHTC</button>
+      <h2>Amount deposited      :   0.0 htc <br> </h2>
+      <h2>Total Amount      :   0.0 htc</h2>
+
+
+      
+    </div>
+
+
+    <script
+  src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"
+  type="application/javascript"
+></script>
+
+<script>
+ const MoodContractAddress = "0x394814f3225f2E89B0Eb5C20af3b7C61bdaa3573";
+  const MoodContractABI = [
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_mood",
+				"type": "string"
+			}
+		],
+		"name": "setMood",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getMood",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+  let MoodContract;
+  let signer;
+
+
+
+  const provider = new ethers.providers.Web3Provider(window.ethereum, "goerli");
+
+  provider.send("eth_requestAccounts", []).then(() => {
+  provider.listAccounts().then((accounts) => {
+    signer = provider.getSigner(accounts[0]);
+    MoodContract = new ethers.Contract(
+      MoodContractAddress,
+      MoodContractABI,
+      signer
+    );
+  });
+});
+
+async function getMood() {
+  const getMoodPromise = MoodContract.getMood();
+  const Mood = await getMoodPromise;
+  console.log(Mood);
+}
+
+async function setMood() {
+  const mood = document.getElementById("mood").value;
+  const setMoodPromise = MoodContract.setMood(mood);
+  await setMoodPromise;
+}
+</script>
+   
+    
+  </body>
+</html>
